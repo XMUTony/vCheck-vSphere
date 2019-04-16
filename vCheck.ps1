@@ -64,6 +64,10 @@ param (
 	[ValidateScript({ Test-Path $_ -PathType 'Container' })]
 	[string]$Outputpath=$Env:TEMP,
 
+	[String]$username,
+	[String]$password,
+
+
 	[ValidateScript({ Test-Path $_ -PathType 'Leaf' })]
 	[string]$job
 )
