@@ -325,7 +325,7 @@ Function Get-HTMLTable {
 	# Use an XML object for ease of use
 	$XMLTable = [xml]($content | ConvertTo-Html -Fragment)
 	$XMLTable.table.SetAttribute("width", "100%")
-	
+
 	# If only one column, fix up the table header
 	if (($content | Get-Member -MemberType Properties).count -eq 1)
 	{
@@ -617,7 +617,7 @@ function Get-ReportResource {
 	)
 	
 	$data = $global:ReportResources[$cid].Data.Split("|")
-	
+
 	# Process each resource type differently
 	switch ($data[0]) {
 		"File"   {
@@ -625,7 +625,7 @@ function Get-ReportResource {
 			if (Test-Path $data[1] -ErrorAction SilentlyContinue) {
 				if ($ReturnType -eq "embed") {
 					# return a MIME/Base64 combo for embedding in HTML
-					$imgData = Get-Content ($data[1]) -Encoding Byte
+					$imgData = Get-Content ($data[1])  -AsByteStream
 					$type = $data[1].substring($data[1].LastIndexOf(".") + 1)
 					return ("data:image/{0};base64,{1}" -f $type, [System.Convert]::ToBase64String($imgData))
 				}
@@ -998,7 +998,7 @@ if (-not $GUIConfig) {
 	Foreach ($cid in $global:ReportResources.Keys) {
 		$embedReport = $embedReport -replace ("cid:{0}" -f $cid), (Get-ReportResource $cid -ReturnType "embed")
 	}
-	$embedReport | Out-File -encoding ASCII -filepath $Filename
+	$embedReport | Out-File -encoding utf8 -filepath $Filename
 
 	# Display to screen
 	if ($DisplayToScreen -and (!($emptyReport -and !$DisplayReportEvenIfEmpty))) {
